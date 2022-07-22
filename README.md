@@ -39,5 +39,6 @@ Storage /data
 
 ## Setup
 ### Setup local repository
-[Following steps to setup a local quay](docs/setup_local_quay.md)
+[Following steps in docs/setup_local_quay.md to setup a local quay](docs/setup_local_quay.md)
 ### Setup quayio
+[Following steps in docs/setup_local_yum_repository.md to setup a local quay](docs/setup_local_yum_repository.md)
