@@ -39,6 +39,5 @@ Storage /data
 
 ## Setup
 ### Setup local repository
-    {% include_relative docs/setup_local_quay.md %}
-
+[Following steps to setup a local quay](docs/setup_local_quay.md)
 ### Setup quayio
