@@ -1,8 +1,10 @@
 # local-repo-rhel-8
-## References
-### Blogs
+## Introduction
+### References
 Follow instruction from:
     https://access.redhat.com/documentation/en-us/red_hat_quay/3.7/pdf/deploy_red_hat_quay_for_proof-of-concept_non-production_purposes/red_hat_quay-3.7-deploy_red_hat_quay_for_proof-of-concept_non-production_purposes-en-us.pdf
+
+### Diagram
 
 
 ### Description
@@ -24,7 +26,7 @@ Setup 2:
     subscription-manager repos --enable=ansible-2.9-for-rhel-8-x86_64-rpms
 
 ### Configure storage
-Storage /data 
+Config /data as Storage location 
 
     sudo parted -s -a optimal -- /dev/sdb mklabel gpt
     sudo parted -s -a optimal -- /dev/sdb mkpart primary 0% 100%
@@ -41,4 +43,4 @@ Storage /data
 ### Setup local repository
 [Following steps in docs/setup_local_quay.md to setup a local quay](docs/setup_local_quay.md)
 ### Setup quayio
-[Following steps in docs/setup_local_yum_repository.md to setup a local quay](docs/setup_local_yum_repository.md)
+[Following steps in docs/setup_local_yum_repository.md to setup a local repository](docs/setup_local_yum_repository.md)
