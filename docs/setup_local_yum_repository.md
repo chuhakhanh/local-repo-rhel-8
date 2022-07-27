@@ -34,4 +34,12 @@
 
 ## Setup repo in client
     echo "10.1.17.35 repo-2" >> /etc/hosts
-    cp local-repo-rhel-8/config/2022_07.repo /etc/yum.repos.d/
+    cp ./local-repo-rhel-8/config/2022_07.repo /etc/yum.repos.d/
+
+
+## Push config to local 
+    mkdir /data/repos/html/config
+
+Copy CA certficate of repo-2
+
+    cp /etc/containers/certs.d/repo-2.lab.example.com/ca.crt /data/repos/html/config/

@@ -29,6 +29,7 @@
 
 ### Create ssl   
 Create a Certificate Authority
+
     cd /root
     openssl genrsa -out rootCA.key 2048
     openssl req -x509 -new -nodes -key rootCA.key -sha256 -days 1024 -out rootCA.pem
@@ -40,6 +41,7 @@ Create a Certificate Authority
     Common Name (eg, your name or your server's hostname) []:repo-2
 
 Sign a certificate
+
     openssl genrsa -out ssl.key 2048
     openssl req -new -key ssl.key -out ssl.csr
     Country Name (2 letter code) [XX]:VN
@@ -64,9 +66,12 @@ Sign a certificate
 
     openssl x509 -req -in ssl.csr -CA rootCA.pem -CAkey rootCA.key -CAcreateserial -out ssl.cert -days 356 -extensions v3_req -extfile openssl.cnf
     cp ssl.cert ssl.crt
+
 We have 3 file: ssl.crt, ssl.cert, ssl.key
 ### Start quayio in config mode to create config for quay.io
+
 Start quay.io to create bundle configuration
+
     podman run -d --rm -it --name quay_config -p 8080:8080 -p 443:8443 registry.redhat.io/quay/quay-rhel8:v3.7.3 config secret
 
 Login to http://10.1.17.35:8080 using login: quayconfig/secret and fill the settings
@@ -107,11 +112,13 @@ Login to https://repo-2.lab.example.com:8080 to create user: quayadmin/password
 ## operation 
 
 ### Config SSL to trust localCA
+
     mkdir /etc/containers/certs.d/repo-2.lab.example.com
     cp /root/rootCA.pem /etc/containers/certs.d/repo-2.lab.example.com/ca.crt
 
 
 ### Configure quayio as default insecure local registry 
+
     cat /etc/containers/registries.conf | grep . | grep -v "#"
     unqualified-search-registries = ["registry.fedoraproject.org", "registry.access.redhat.com", "registry.centos.org", "docker.io"]
     [[registry]]
@@ -122,6 +129,7 @@ Login to https://repo-2.lab.example.com:8080 to create user: quayadmin/password
     
 ### Pull and Push required quay image to local quay
 Login to registry.redhat.io and pull below images:
+
     podman login repo-2.lab.example.com --username quayadmin --password password
     podman images
     REPOSITORY                              TAG         IMAGE ID      CREATED      SIZE
@@ -130,6 +138,7 @@ Login to registry.redhat.io and pull below images:
     registry.redhat.io/rhel8/redis-5        1           c9df129d49f8  7 weeks ago  308 MB
 
 ### Pull and Push required ceph image to local quay
+
     registry.redhat.io/openshift4/ose-prometheus                latest      e5edf1ce01c5  4 weeks ago  445 MB
     registry.redhat.io/openshift4/ose-prometheus-node-exporter  latest      74695c709d29  4 weeks ago  319 MB
     registry.redhat.io/openshift4/ose-prometheus-alertmanager   latest      a0913572d333  4 weeks ago  351 MB
