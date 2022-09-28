@@ -65,7 +65,7 @@ Sign a certificate
     IP.1 = 10.1.17.35
 
     openssl x509 -req -in ssl.csr -CA rootCA.pem -CAkey rootCA.key -CAcreateserial -out ssl.cert -days 356 -extensions v3_req -extfile openssl.cnf
-    cp ssl.cert ssl.crt
+    cp ssl.cert ssl.crt $QUAY/config
 
 We have 3 file: ssl.crt, ssl.cert, ssl.key
 ### Start quayio in config mode to create config for quay.io
@@ -159,6 +159,37 @@ Login to registry.redhat.io and pull below images:
     podman push --remove-signatures repo-2.lab.example.com/quayadmin/lab/rhceph/rhceph-5-rhel8                    
     podman push --remove-signatures repo-2.lab.example.com/quayadmin/lab/openshift4/ose-prometheus  
 
+### Startup containers
+
+    [root@repo-2 ~]# podman ps -a
+    CONTAINER ID  IMAGE                                     COMMAND               CREATED       STATUS      PORTS                   NAMES
+    9e30c12eb10f  registry.redhat.io/rhel8/httpd-24:latest  /usr/bin/run-http...  2 months ago  Created     0.0.0.0:80->8080/tcp    localrepos
+    5ee08d172cc4  registry.redhat.io/rhel8/postgresql-10:1  run-postgresql        2 months ago  Created     0.0.0.0:5432->5432/tcp  postgresql-quay
+    929738fef942  registry.redhat.io/rhel8/redis-5:1        run-redis             2 months ago  Created     0.0.0.0:6379->6379/tcp  redis
 
 
+    podman start 9e30c12eb10f
+    podman start 5ee08d172cc4
+    podman start 929738fef942
 
+
+    export QUAY=/root/quay
+    podman run -d --rm -p 8080:8080 -p 443:8443 \
+     --name=quay \
+     -v $QUAY/config:/conf/stack:Z \
+     -v $QUAY/storage:/datastorage:Z \
+     registry.redhat.io/quay/quay-rhel8:v3.7.3
+
+
+### Change quayio IP
+    export QUAY=/root/quay
+    vi /root/openssl.cnf
+    openssl x509 -req -in ssl.csr -CA rootCA.pem -CAkey rootCA.key -CAcreateserial -out ssl.cert -days 356 -extensions v3_req -extfile openssl.cnf
+    cp ssl.cert ssl.crt $QUAY/config
+    cd /root/quay/config/
+    vi config.yaml
+    podman run -d --rm -p 8080:8080 -p 443:8443 \
+    --name=quay \
+    -v $QUAY/config:/conf/stack:Z \
+    -v $QUAY/storage:/datastorage:Z \
+    registry.redhat.io/quay/quay-rhel8:v3.7.3
